@@ -1,0 +1,29 @@
+# Optional: deploy the backend on Render with a Blueprint (New > Blueprint, pick this repo).
+# After the frontend is deployed, set FRONTEND_URL to its public URL.
+services:
+  - type: web
+    name: ambulance-backend
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: FRONTEND_URL          # e.g. https://ambulance-frontend.vercel.app
+        sync: false
+      - key: COOKIE_SAME_SITE      # frontend and backend are on different domains
+        value: none
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # SQLite (the default) is wiped on every restart on Render's free plan.
+      # Use a hosted MySQL to keep data; remove these four entries to stay on SQLite.
+      - key: SPRING_PROFILES_ACTIVE
+        value: mysql
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
